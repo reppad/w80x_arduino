@@ -11,7 +11,10 @@ uint32_t setPWM_Freq_Period(PWM_HandleTypeDef *hpwm, uint32_t pwmFreq, uint8_t p
 	if (hpwm == NULL)
 		return 0;
 
-	uint32_t freq = 40000000ul / (period + 1);
+	wm_sys_clk sysclk;
+    SystemClock_Get(&sysclk);
+
+	uint32_t freq = sysclk.apbclk * 1000000ul / (period + 1);
 	uint32_t prescaler = freq / pwmFreq;
 	HAL_PWM_Stop(hpwm);
 	hpwm->Init.Prescaler = prescaler; // PWM Freq = 40,000,000 / prescaler / (period + 1)
